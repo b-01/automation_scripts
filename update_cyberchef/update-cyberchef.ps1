@@ -5,16 +5,18 @@ Remove-Item ".\*" -Recurse -Exclude "*.ps1"
 $AllProtocols = [System.Net.SecurityProtocolType]'Tls11,Tls12'
 [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
 #
+#
 $response = Invoke-RestMethod -Uri "https://api.github.com/repos/gchq/CyberChef/releases/latest"
-$js_file = "https://github.com/gchq/CyberChef/releases/download/" +$response.tag_name +"/cjs.js"
 $zip_file = "https://github.com/gchq/CyberChef/releases/download/" +$response.tag_name +"/CyberChef_" +$response.tag_name +".zip"
 $fname = "CyberChef_" +$response.tag_name +".html"
 #
-Invoke-WebRequest -Uri $js_file -OutFile "cjs.js"
+# faster download by removing the progress bar
+$ProgressPreference = 'SilentlyContinue'
 Invoke-WebRequest -Uri $zip_file -OutFile "CyberChef.zip"
 #
+#
 Expand-Archive "CyberChef.zip" -DestinationPath "output"
-Move-Item ".\output\*" -Destination "."
+Copy-Item ".\output\*" -Recurse -Destination "."
 Move-Item $fname -Destination "cyberchef.htm"
 #
 # cleanup
