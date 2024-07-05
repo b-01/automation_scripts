@@ -56,6 +56,6 @@ if __name__ == "__main__":
     compressed_file = io.BytesIO(response.content)
     tarball = tarfile.open(fileobj=compressed_file, mode="r:*")
     # extract everything to install dir
-    tarball.extractall(args.install_dir)
+    tarball.extractall(args.install_dir, filter="data")
     logger.info("Uncompressed to '{}'!".format(args.install_dir))
     logger.info("Update finished!")
